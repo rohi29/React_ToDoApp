@@ -28,5 +28,10 @@ export default function Header(props) {
         </div>
       </nav>
     </>
-  )
+
+)
+}
+
+Header.defaultProps = {
+    title : "ToDo List"
 }
