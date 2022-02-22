@@ -1,14 +1,94 @@
-import React from 'react'
+import React, { Component } from 'react';
 
-export  const TodoItem = ({todo, onDelete}) => {
+export default class TodoItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      task: this.props.taskItem.task,
+      isEditing: false,
+    };
+  }
+  setEditingState = (isEditing) => {
+    this.setState({ isEditing: isEditing });
+  };
+  toggleTask = () => {
+    this.props.toggleTask(this.props.id);
+  };
+  deleteTask = () => {
+    this.props.deleteTask(this.props.id);
+  };
+  handleChange = (event) => {
+    this.setState({ task: event.target.value });
+  };
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.editTask(this.props.id, this.state.task);
+    this.setState({ isEditing: false });
+  };
+  render() {
     return (
-        <div>
-        <h4>{todo.Title}</h4>
-        <p>{todo.Desc}</p>
-        <button className="btn btn-sm btn-danger" onClick={()=>{onDelete(todo)}}>
-            Delete</button>
-
-        </div>
-    )  
+      <tr>
+        {this.state.isEditing ? (
+          <>
+            <td>
+              <form onSubmit={this.handleSubmit}>
+                <input
+                 class="form-control"
+                  value={this.state.task}
+                  onChange={this.handleChange}
+                  autoFocus
+                />
+              </form>
+            </td>
+            <td>
+              <button
+                className="btn btn-success save"
+                onClick={this.handleSubmit}
+                type="submit"
+              >
+                Save
+              </button>
+              <button
+                className=" btn btn-secondary back"
+                onClick={() => this.setEditingState(false)}
+                type="button"
+              >
+                Back
+              </button>
+            </td>
+          </>
+        ) : (
+          <>
+            <td className="task" onClick={this.toggleTask}>
+              <input
+                type="checkbox"
+                readOnly
+                checked={this.props.taskItem.isCompleted}
+              />
+              <span
+                className={
+                  this.props.taskItem.isCompleted
+                    ? 'completed'
+                    : 'not-completed'
+                }
+              >
+                {this.props.taskItem.task}
+              </span>
+            </td>
+            <td>
+              <button
+                className="edit btn btn-warning"
+                onClick={() => this.setEditingState(true)}
+              >
+                Edit
+              </button>
+              <button className="delete btn btn-danger" onClick={this.deleteTask}>
+                Delete
+              </button>
+            </td>
+          </>
+        )}
+      </tr>
+    );
+  }
 }
-export default TodoItem;
